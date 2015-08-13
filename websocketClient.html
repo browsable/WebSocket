@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
+    <script>
+        var socket;
+        function serverConnect(){
+            //websocket server에 접속
+            socket = io.connect("http://localhost:5000",{
+                "force new connection" : true
+            });
+            /*socket.on("welcome",function(data){
+                $("h1").text(data.msg);
+            }); *///welcome이라는 이벤드 틍록
+            socket.on("serverMSG",function(data){
+                var tmp = $("#chat").val();
+                tmp += "\n" + data.msg;
+                $("#chat").val(tmp);
+            });
+        }
+        function sendMSG(){
+            if(event.keyCode==13){
+                //만약 입력된 키가 엔터키이면
+                socket.emit("clientMSG",{
+                    msg : $("#uMSG").val()
+                })
+            }
+        }
+    </script>
+</head>
+<body>
+    <input type="button" value="웹 소켓 서버에 접속" onclick="serverConnect()"><br><br>
+    <!--<h1>에코 클라이언트!!</h1><br>-->
+    <textarea id="chat" rows="10" cols="40">
+
+    </textarea><br>
+    입력내용 : <input type="text" id="uMSG" onkeyup="sendMSG()">
+
+</body>
+</html>
